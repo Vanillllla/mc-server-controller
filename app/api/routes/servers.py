@@ -311,16 +311,10 @@ async def create_server_from_archive(
         raise HTTPException(status_code=400, detail=_validation_error_detail(exc)) from exc
 
     service = get_instance_service(request)
-    temp_archive_path = service.settings.uploads_dir / "temp" / f"{payload.id}.import.zip"
-    temp_archive_path.parent.mkdir(parents=True, exist_ok=True)
 
     created_server_id = ""
     try:
-        with temp_archive_path.open("wb") as output:
-            while chunk := await archive_file.read(UPLOAD_COPY_CHUNK_SIZE):
-                output.write(chunk)
-
-        with ZipFile(temp_archive_path) as archive:
+        with ZipFile(archive_file.file) as archive:
             entries = _safe_archive_entries(archive)
             selected_target = (
                 _choose_forge_args_file(entries, jar_file.strip())
@@ -347,8 +341,6 @@ async def create_server_from_archive(
         if created_server_id:
             service.delete_server(created_server_id, delete_files=True)
         raise
-    finally:
-        temp_archive_path.unlink(missing_ok=True)
 
 
 @router.get("/active", response_model=ServerInstance | None)

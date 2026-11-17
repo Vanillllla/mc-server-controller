@@ -9,6 +9,7 @@ User=mc-panel
 Group=mc-panel
 WorkingDirectory=/opt/mc-server-controller
 Environment=MC_PANEL_HOME=/srv/mc-panel
+Environment=TMPDIR=/srv/mc-panel/uploads/temp
 Environment=MC_PANEL_VERSION=0.1.1
 Environment=MC_PANEL_GITHUB_REPO=Vanillllla/mc-server-controller
 Environment=MC_PANEL_ADMIN_USERNAME=admin
